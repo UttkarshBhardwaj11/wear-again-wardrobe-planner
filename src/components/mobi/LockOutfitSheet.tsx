@@ -135,15 +135,15 @@ export function LockOutfitSheet({
       {eventError && <p className="mt-1.5 text-xs text-destructive">{eventError}</p>}
 
       <Button
-        size="lg"
-        className="mt-6 h-14 w-full rounded-full text-base shadow-lift"
+        size="xl"
+        className="mt-6 w-full shadow-lift"
         onClick={() => {
           setTouched(true);
           if (!event.trim()) return;
           onConfirm({ event_name: event.trim(), plan_date: date });
         }}
       >
-        <CalendarCheck className="size-5" /> {mode === "lock" ? "Confirm & Save" : "Save Changes"}
+        <CalendarCheck /> {mode === "lock" ? "Confirm & Save" : "Save Changes"}
       </Button>
       <button
         type="button"
