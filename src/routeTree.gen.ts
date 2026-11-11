@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as WardrobeRouteImport } from './routes/wardrobe'
 import { Route as AddIndexRouteImport } from './routes/add/index'
+import { Route as AddDetailsRouteImport } from './routes/add/details'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,17 +35,24 @@ const AddIndexRoute = AddIndexRouteImport.update({
   path: '/add/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AddDetailsRoute = AddDetailsRouteImport.update({
+  id: '/add/details',
+  path: '/add/details',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/wardrobe': typeof WardrobeRoute
+  '/add/details': typeof AddDetailsRoute
   '/add/': typeof AddIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/wardrobe': typeof WardrobeRoute
+  '/add/details': typeof AddDetailsRoute
   '/add': typeof AddIndexRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/wardrobe': typeof WardrobeRoute
+  '/add/details': typeof AddDetailsRoute
   '/add/': typeof AddIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/home' | '/wardrobe' | '/add/'
+  fullPaths: '/' | '/home' | '/wardrobe' | '/add/details' | '/add/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/wardrobe' | '/add'
-  id: '__root__' | '/' | '/home' | '/wardrobe' | '/add/'
+  to: '/' | '/home' | '/wardrobe' | '/add/details' | '/add'
+  id: '__root__' | '/' | '/home' | '/wardrobe' | '/add/details' | '/add/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HomeRoute: typeof HomeRoute
   WardrobeRoute: typeof WardrobeRoute
+  AddDetailsRoute: typeof AddDetailsRoute
   AddIndexRoute: typeof AddIndexRoute
 }
 
@@ -99,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AddIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/add/details': {
+      id: '/add/details'
+      path: '/add/details'
+      fullPath: '/add/details'
+      preLoaderRoute: typeof AddDetailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HomeRoute: HomeRoute,
   WardrobeRoute: WardrobeRoute,
+  AddDetailsRoute: AddDetailsRoute,
   AddIndexRoute: AddIndexRoute,
 }
 export const routeTree = rootRouteImport
