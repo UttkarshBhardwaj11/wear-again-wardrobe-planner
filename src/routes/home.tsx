@@ -99,7 +99,7 @@ function Home() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[15px] font-semibold">
-              {wx ? `${wx.current.temp}°C & ${describeWeather(wx.current.code).label}` : forecast.isError ? "Today's styling" : "Checking the sky…"}
+              {wx ? `${wx.current.temp}°C · ${describeWeather(wx.current.code).label}` : forecast.isError ? "Today's styling" : "Checking the sky…"}
             </p>
             <p className="truncate text-sm text-muted-foreground">
               {todayPlan
