@@ -14,6 +14,7 @@ import { Route as HomeRouteImport } from './routes/home'
 import { Route as WardrobeRouteImport } from './routes/wardrobe'
 import { Route as AddIndexRouteImport } from './routes/add/index'
 import { Route as AddDetailsRouteImport } from './routes/add/details'
+import { Route as ItemIdRouteImport } from './routes/item/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,12 +41,18 @@ const AddDetailsRoute = AddDetailsRouteImport.update({
   path: '/add/details',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ItemIdRoute = ItemIdRouteImport.update({
+  id: '/item/$id',
+  path: '/item/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/wardrobe': typeof WardrobeRoute
   '/add/details': typeof AddDetailsRoute
+  '/item/$id': typeof ItemIdRoute
   '/add/': typeof AddIndexRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/home': typeof HomeRoute
   '/wardrobe': typeof WardrobeRoute
   '/add/details': typeof AddDetailsRoute
+  '/item/$id': typeof ItemIdRoute
   '/add': typeof AddIndexRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,23 @@ export interface FileRoutesById {
   '/home': typeof HomeRoute
   '/wardrobe': typeof WardrobeRoute
   '/add/details': typeof AddDetailsRoute
+  '/item/$id': typeof ItemIdRoute
   '/add/': typeof AddIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/home' | '/wardrobe' | '/add/details' | '/add/'
+  fullPaths:
+    '/' | '/home' | '/wardrobe' | '/add/details' | '/item/$id' | '/add/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/wardrobe' | '/add/details' | '/add'
-  id: '__root__' | '/' | '/home' | '/wardrobe' | '/add/details' | '/add/'
+  to: '/' | '/home' | '/wardrobe' | '/add/details' | '/item/$id' | '/add'
+  id:
+    | '__root__'
+    | '/'
+    | '/home'
+    | '/wardrobe'
+    | '/add/details'
+    | '/item/$id'
+    | '/add/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +93,7 @@ export interface RootRouteChildren {
   HomeRoute: typeof HomeRoute
   WardrobeRoute: typeof WardrobeRoute
   AddDetailsRoute: typeof AddDetailsRoute
+  ItemIdRoute: typeof ItemIdRoute
   AddIndexRoute: typeof AddIndexRoute
 }
 
@@ -116,6 +134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AddDetailsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/item/$id': {
+      id: '/item/$id'
+      path: '/item/$id'
+      fullPath: '/item/$id'
+      preLoaderRoute: typeof ItemIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -124,6 +149,7 @@ const rootRouteChildren: RootRouteChildren = {
   HomeRoute: HomeRoute,
   WardrobeRoute: WardrobeRoute,
   AddDetailsRoute: AddDetailsRoute,
+  ItemIdRoute: ItemIdRoute,
   AddIndexRoute: AddIndexRoute,
 }
 export const routeTree = rootRouteImport
