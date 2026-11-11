@@ -48,7 +48,7 @@ function Home() {
   const hydrated = useHydrated();
   const today = todayISO();
   const [filter, setFilter] = useState<Category | "ALL">("ALL");
-  const { place, useMyLocation } = usePlace();
+  const { place, locateMe } = usePlace();
   const forecast = useForecast(place);
 
   const garments = activeGarments(state);
@@ -120,7 +120,7 @@ function Home() {
         <button
           type="button"
           onClick={() =>
-            useMyLocation()
+            locateMe()
               .then(() => toast.success("Weather now uses your location"))
               .catch((e: Error) => toast.error(e.message))
           }

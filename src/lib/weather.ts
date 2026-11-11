@@ -51,7 +51,7 @@ export function usePlace() {
     }
   }, []);
 
-  const useMyLocation = () =>
+  const locateMe = () =>
     new Promise<void>((resolve, reject) => {
       if (!navigator.geolocation) return reject(new Error("Location isn't available on this device."));
       navigator.geolocation.getCurrentPosition(
@@ -66,7 +66,7 @@ export function usePlace() {
       );
     });
 
-  return { place, useMyLocation };
+  return { place, locateMe };
 }
 
 export function useForecast(place: Place) {
