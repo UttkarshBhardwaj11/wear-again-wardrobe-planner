@@ -10,16 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as WardrobeRouteImport } from './routes/wardrobe'
 import { Route as AddIndexRouteImport } from './routes/add/index'
 import { Route as AddDetailsRouteImport } from './routes/add/details'
 import { Route as ItemIdRouteImport } from './routes/item/$id'
 import { Route as StyleIndexRouteImport } from './routes/style/index'
+import { Route as StyleResultsRouteImport } from './routes/style/results'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarRoute = CalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeRoute = HomeRouteImport.update({
@@ -52,32 +59,43 @@ const StyleIndexRoute = StyleIndexRouteImport.update({
   path: '/style/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StyleResultsRoute = StyleResultsRouteImport.update({
+  id: '/style/results',
+  path: '/style/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/calendar': typeof CalendarRoute
   '/home': typeof HomeRoute
   '/wardrobe': typeof WardrobeRoute
   '/add/details': typeof AddDetailsRoute
   '/item/$id': typeof ItemIdRoute
+  '/style/results': typeof StyleResultsRoute
   '/add/': typeof AddIndexRoute
   '/style/': typeof StyleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/calendar': typeof CalendarRoute
   '/home': typeof HomeRoute
   '/wardrobe': typeof WardrobeRoute
   '/add/details': typeof AddDetailsRoute
   '/item/$id': typeof ItemIdRoute
+  '/style/results': typeof StyleResultsRoute
   '/add': typeof AddIndexRoute
   '/style': typeof StyleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/calendar': typeof CalendarRoute
   '/home': typeof HomeRoute
   '/wardrobe': typeof WardrobeRoute
   '/add/details': typeof AddDetailsRoute
   '/item/$id': typeof ItemIdRoute
+  '/style/results': typeof StyleResultsRoute
   '/add/': typeof AddIndexRoute
   '/style/': typeof StyleIndexRoute
 }
@@ -85,38 +103,46 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/calendar'
     | '/home'
     | '/wardrobe'
     | '/add/details'
     | '/item/$id'
+    | '/style/results'
     | '/add/'
     | '/style/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/calendar'
     | '/home'
     | '/wardrobe'
     | '/add/details'
     | '/item/$id'
+    | '/style/results'
     | '/add'
     | '/style'
   id:
     | '__root__'
     | '/'
+    | '/calendar'
     | '/home'
     | '/wardrobe'
     | '/add/details'
     | '/item/$id'
+    | '/style/results'
     | '/add/'
     | '/style/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CalendarRoute: typeof CalendarRoute
   HomeRoute: typeof HomeRoute
   WardrobeRoute: typeof WardrobeRoute
   AddDetailsRoute: typeof AddDetailsRoute
   ItemIdRoute: typeof ItemIdRoute
+  StyleResultsRoute: typeof StyleResultsRoute
   AddIndexRoute: typeof AddIndexRoute
   StyleIndexRoute: typeof StyleIndexRoute
 }
@@ -128,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/home': {
@@ -172,15 +205,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StyleIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/style/results': {
+      id: '/style/results'
+      path: '/style/results'
+      fullPath: '/style/results'
+      preLoaderRoute: typeof StyleResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CalendarRoute: CalendarRoute,
   HomeRoute: HomeRoute,
   WardrobeRoute: WardrobeRoute,
   AddDetailsRoute: AddDetailsRoute,
   ItemIdRoute: ItemIdRoute,
+  StyleResultsRoute: StyleResultsRoute,
   AddIndexRoute: AddIndexRoute,
   StyleIndexRoute: StyleIndexRoute,
 }
