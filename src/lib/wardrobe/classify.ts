@@ -3,7 +3,7 @@ import type { Category, Occasion } from "./types";
 const OCCASION_KEYWORDS: [Occasion, string[]][] = [
   [
     "WEDDING",
-    ["wedding", "sangeet", "mehendi", "mehndi", "haldi", "reception", "shaadi", "engagement", "baraat", "festive", "diwali", "puja", "pooja", "eid", "roka", "cocktail night of"],
+    ["wedding", "sangeet", "mehendi", "mehndi", "haldi", "reception", "shaadi", "engagement", "baraat", "festive", "diwali", "puja", "pooja", "eid", "roka"],
   ],
   ["PARTY", ["party", "fest", "club", "cocktail", "birthday", "night out", "date night", "drinks", "gig", "concert", "bar ", "rooftop", "new year"]],
   ["FORMAL", ["formal", "office", "meeting", "interview", "client", "dinner", "presentation", "conference", "work", "business", "gala", "pitch", "board", "review", "networking"]],
@@ -21,9 +21,9 @@ export function occasionFromText(text: string): Occasion | null {
 
 const CATEGORY_KEYWORDS: [Category, string[]][] = [
   ["ETHNIC", ["kurta", "saree", "sari", "lehenga", "anarkali", "sherwani", "salwar", "dupatta", "kurti", "bandhgala", "churidar"]],
-  ["FOOTWEAR", ["shoe", "boot", "sneaker", "heel", "sandal", "jutti", "mojari", "loafer", "trainer", "flat", "mule", "pump", "oxford", "brogue", "kolhapuri"]],
+  ["FOOTWEAR", ["shoe", "boot", "sneaker", "heel", "sandal", "jutti", "mojari", "loafer", "trainer", "mule", "pump", "oxford", "brogue", "kolhapuri"]],
   ["OUTERWEAR", ["coat", "jacket", "blazer", "trench", "parka", "cardigan", "overshirt", "shacket", "gilet"]],
-  ["BOTTOMS", ["jean", "trouser", "pant", "skirt", "short", "chino", "jogger", "legging", "culotte"]],
+  ["BOTTOMS", ["jean", "trouser", "pant", "skirt", "shorts", "chino", "jogger", "legging", "culotte"]],
   ["TOPS", ["shirt", "top", "tee", "t-shirt", "sweater", "blouse", "knit", "jumper", "polo", "camisole", "cami", "tank", "turtleneck", "hoodie", "sweatshirt"]],
 ];
 
