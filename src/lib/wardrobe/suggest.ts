@@ -1,5 +1,5 @@
 import { isNeutral } from "./colors";
-import { daysBetween } from "./dates";
+import { daysBetween, todayISO } from "./dates";
 import { activeGarments, garmentPlanDates, occasionsFor } from "./derive";
 import type { Category, Garment, Occasion, WardrobeState } from "./types";
 
@@ -35,6 +35,8 @@ export interface SuggestInput {
   avoidRecent: boolean;
   /** Only return combos that include this garment. */
   anchorId?: string;
+  /** Defaults to the real current date. */
+  today?: string;
 }
 
 export interface SuggestResult {
@@ -56,13 +58,22 @@ function hash(str: string): number {
   return Math.abs(h);
 }
 
-export function flagsForGarment(s: WardrobeState, garmentId: string, targetDate: string): PieceFlag[] {
+/**
+ * recent: worn or planned 1–7 days before the target date.
+ * planned: locked to another upcoming event (today or later) within 30 days of the target.
+ */
+export function flagsForGarment(
+  s: WardrobeState,
+  garmentId: string,
+  targetDate: string,
+  today: string,
+): PieceFlag[] {
   const flags: PieceFlag[] = [];
   for (const { date, plan } of garmentPlanDates(s, garmentId)) {
     const before = daysBetween(date, targetDate); // positive = date is before target
     if (before >= 1 && before <= RECENT_WINDOW_DAYS) {
       flags.push({ garmentId, kind: "recent", date, event: plan.event_name });
-    } else if (date !== targetDate && Math.abs(before) <= PLANNED_WINDOW_DAYS && before <= 0) {
+    } else if (date >= today && Math.abs(before) <= PLANNED_WINDOW_DAYS) {
       flags.push({ garmentId, kind: "planned", date, event: plan.event_name });
     }
   }
@@ -79,12 +90,13 @@ function harmonyScore(pieces: Garment[]): number {
 
 export function suggestOutfits(s: WardrobeState, input: SuggestInput): SuggestResult {
   const { occasion, targetDate, avoidRecent, anchorId } = input;
+  const today = input.today ?? todayISO();
   const flagMap = new Map<string, PieceFlag[]>();
   let excludedRecent = 0;
 
   const eligible = activeGarments(s).filter((g) => {
     if (!occasionsFor(s, g.id).includes(occasion)) return false;
-    const flags = flagsForGarment(s, g.id, targetDate);
+    const flags = flagsForGarment(s, g.id, targetDate, today);
     flagMap.set(g.id, flags);
     if (avoidRecent && flags.some((f) => f.kind === "recent") && g.id !== anchorId) {
       excludedRecent++;
@@ -120,10 +132,10 @@ export function suggestOutfits(s: WardrobeState, input: SuggestInput): SuggestRe
     if (!isEthnic && outers.length) {
       // Layer formal looks always; other looks on alternating combos for variety.
       if (occasion === "FORMAL" || i % 2 === 0) {
-        const best = [...outers].sort(
-          (a, b) => harmonyScore([...base, b]) - harmonyScore([...base, a]) || hash(a.id + i) - hash(b.id + i),
-        )[(i >> 1) % Math.min(outers.length, 2)];
-        pieces = [best, ...base];
+        const ranked = [...outers].sort(
+          (a, b) => harmonyScore([...base, b]) - harmonyScore([...base, a]) || a.id.localeCompare(b.id),
+        );
+        pieces = [ranked[(i >> 1) % Math.min(ranked.length, 2)], ...base];
       }
     }
     const ids = pieces.map((p) => p.id);
