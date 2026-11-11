@@ -1,8 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { addDays, format } from "date-fns";
+import { addDays, addMonths, format } from "date-fns";
 import {
   ArrowUpRight,
   Briefcase,
+  ChevronLeft,
+  ChevronRight,
   Coffee,
   Gem,
   History,
@@ -32,8 +34,6 @@ import { RECENT_WINDOW_DAYS, suggestOutfits } from "@/lib/wardrobe/suggest";
 import { CATEGORY_SINGULAR, OCCASION_LABEL, OCCASIONS, type Occasion } from "@/lib/wardrobe/types";
 import { describeWeather, layerAdvice, useForecast, usePlace } from "@/lib/weather";
 import { cn } from "@/lib/utils";
-import { addMonths } from "date-fns";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const Route = createFileRoute("/style/")({
   validateSearch: parseStyleSearch,
