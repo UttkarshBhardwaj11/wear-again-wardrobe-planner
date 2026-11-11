@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as WardrobeRouteImport } from './routes/wardrobe'
+import { Route as AddIndexRouteImport } from './routes/add/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +29,44 @@ const WardrobeRoute = WardrobeRouteImport.update({
   path: '/wardrobe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AddIndexRoute = AddIndexRouteImport.update({
+  id: '/add/',
+  path: '/add/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/wardrobe': typeof WardrobeRoute
+  '/add/': typeof AddIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/wardrobe': typeof WardrobeRoute
+  '/add': typeof AddIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/wardrobe': typeof WardrobeRoute
+  '/add/': typeof AddIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/home' | '/wardrobe'
+  fullPaths: '/' | '/home' | '/wardrobe' | '/add/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/wardrobe'
-  id: '__root__' | '/' | '/home' | '/wardrobe'
+  to: '/' | '/home' | '/wardrobe' | '/add'
+  id: '__root__' | '/' | '/home' | '/wardrobe' | '/add/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HomeRoute: typeof HomeRoute
   WardrobeRoute: typeof WardrobeRoute
+  AddIndexRoute: typeof AddIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +92,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WardrobeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/add/': {
+      id: '/add/'
+      path: '/add'
+      fullPath: '/add/'
+      preLoaderRoute: typeof AddIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HomeRoute: HomeRoute,
   WardrobeRoute: WardrobeRoute,
+  AddIndexRoute: AddIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
