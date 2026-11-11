@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Wardrobe data (garments, outfits, calendar plans) lives in the browser's localStorage via `src/lib/wardrobe/store.ts`; there is no backend yet — keep all reads/writes going through that store so a later move to a database is one swap.
+- Sample-wardrobe photos are referenced as `seed:<key>` and resolved by `resolveImage`, so saved data survives rebuilt asset URLs.
+- Outfit suggestions are rule-based in `src/lib/wardrobe/suggest.ts` (covered by `suggest.test.ts`); keep it pure and deterministic.
