@@ -1,5 +1,6 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, LogOut } from "lucide-react";
 import type { ReactNode } from "react";
 import { toast } from "sonner";
 import {
@@ -11,14 +12,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useHydrated } from "@/hooks/use-hydrated";
-import { clearWardrobe, resetToSample, useWardrobe } from "@/lib/wardrobe/store";
+import { supabase } from "@/integrations/supabase/client";
+import { clearWardrobe, resetToSample, resetWardrobe, useWardrobe } from "@/lib/wardrobe/store";
 import { Wordmark } from "./Hanger";
 
 export function ProfileAvatar() {
   const state = useWardrobe();
   const hydrated = useHydrated();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const name = hydrated ? state.profile?.name || "" : "";
+  const signOut = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    resetWardrobe();
+    navigate({ to: "/auth", replace: true });
+  };
   const initials = name ? name.trim().slice(0, 1).toUpperCase() : "M";
 
   return (
@@ -36,22 +46,30 @@ export function ProfileAvatar() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onSelect={() => {
-            resetToSample();
-            toast.success("Sample wardrobe restored");
+            toast.promise(resetToSample(), {
+              loading: "Restoring the sample wardrobe…",
+              success: "Sample wardrobe restored",
+              error: "Couldn't restore the sample wardrobe. Please try again.",
+            });
           }}
         >
           Restore sample wardrobe
         </DropdownMenuItem>
         <DropdownMenuItem
           onSelect={() => {
-            clearWardrobe();
-            toast("Wardrobe cleared — add your first piece");
+            toast.promise(clearWardrobe(), {
+              loading: "Clearing your wardrobe…",
+              success: "Wardrobe cleared — add your first piece",
+              error: "Couldn't clear your wardrobe. Please try again.",
+            });
           }}
         >
           Start with an empty wardrobe
         </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => navigate({ to: "/", search: { step: "name" } })}>
-          Change my name
+        <DropdownMenuItem onSelect={() => navigate({ to: "/welcome" })}>Change my name</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={signOut} className="gap-2">
+          <LogOut className="size-4" /> Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

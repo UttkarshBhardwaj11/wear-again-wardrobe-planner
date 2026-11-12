@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { prettyDate, relativeDayLabel, todayISO } from "@/lib/wardrobe/dates";
 import { garmentById } from "@/lib/wardrobe/derive";
 import { parseStyleSearch } from "@/lib/wardrobe/search";
-import { lockOutfit, StorageFullError, useWardrobe } from "@/lib/wardrobe/store";
+import { lockOutfit, useWardrobe } from "@/lib/wardrobe/store";
 import { PAGE_SIZE, suggestOutfits, type Suggestion } from "@/lib/wardrobe/suggest";
 import { CATEGORY_LABEL, CATEGORY_SINGULAR, OCCASION_LABEL, type Garment } from "@/lib/wardrobe/types";
 import { describeWeather, useForecast, usePlace } from "@/lib/weather";
@@ -72,7 +72,7 @@ function Results() {
       toast.success(`Locked for ${prettyDate(v.plan_date, "EEE, MMM d")}`, { description: v.event_name });
       navigate({ to: "/calendar", search: { date: v.plan_date } });
     } catch (e) {
-      toast.error(e instanceof StorageFullError ? e.message : "Couldn't save this plan. Please try again.");
+      toast.error((e as Error).message || "Couldn't save this plan. Please try again.");
     }
   };
 

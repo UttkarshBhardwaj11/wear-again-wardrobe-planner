@@ -14,7 +14,7 @@ import { PRIMARY_SWATCH_COUNT, SWATCHES } from "@/lib/wardrobe/colors";
 import { activeGarments, garmentById, occasionsFor } from "@/lib/wardrobe/derive";
 import { clearDraft, readDraft } from "@/lib/wardrobe/draft";
 import { processPhoto } from "@/lib/wardrobe/photo";
-import { addGarment, StorageFullError, updateGarment, useWardrobe } from "@/lib/wardrobe/store";
+import { addGarment, updateGarment, useWardrobe } from "@/lib/wardrobe/store";
 import {
   CATEGORIES,
   CATEGORY_LABEL,
@@ -174,7 +174,7 @@ function ItemDetailsForm() {
         navigate({ to: "/item/$id", params: { id }, replace: true });
       }
     } catch (e) {
-      toast.error(e instanceof StorageFullError ? e.message : "Couldn't save this item. Please try again.");
+      toast.error((e as Error).message || "Couldn't save this item. Please try again.");
     }
   };
 

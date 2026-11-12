@@ -16,6 +16,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedWardrobeRouteImport } from './routes/_authenticated/wardrobe'
+import { Route as AuthenticatedWelcomeRouteImport } from './routes/_authenticated/welcome'
 import { Route as AuthenticatedAddIndexRouteImport } from './routes/_authenticated/add/index'
 import { Route as AuthenticatedAddDetailsRouteImport } from './routes/_authenticated/add/details'
 import { Route as AuthenticatedItemIdRouteImport } from './routes/_authenticated/item/$id'
@@ -56,6 +57,11 @@ const AuthenticatedWardrobeRoute = AuthenticatedWardrobeRouteImport.update({
   path: '/wardrobe',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedWelcomeRoute = AuthenticatedWelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAddIndexRoute = AuthenticatedAddIndexRouteImport.update({
   id: '/add/',
   path: '/add/',
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/calendar': typeof AuthenticatedCalendarRoute
   '/home': typeof AuthenticatedHomeRoute
   '/wardrobe': typeof AuthenticatedWardrobeRoute
+  '/welcome': typeof AuthenticatedWelcomeRoute
   '/add/details': typeof AuthenticatedAddDetailsRoute
   '/item/$id': typeof AuthenticatedItemIdRoute
   '/style/results': typeof AuthenticatedStyleResultsRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/calendar': typeof AuthenticatedCalendarRoute
   '/home': typeof AuthenticatedHomeRoute
   '/wardrobe': typeof AuthenticatedWardrobeRoute
+  '/welcome': typeof AuthenticatedWelcomeRoute
   '/add/details': typeof AuthenticatedAddDetailsRoute
   '/item/$id': typeof AuthenticatedItemIdRoute
   '/style/results': typeof AuthenticatedStyleResultsRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/wardrobe': typeof AuthenticatedWardrobeRoute
+  '/_authenticated/welcome': typeof AuthenticatedWelcomeRoute
   '/_authenticated/add/details': typeof AuthenticatedAddDetailsRoute
   '/_authenticated/item/$id': typeof AuthenticatedItemIdRoute
   '/_authenticated/style/results': typeof AuthenticatedStyleResultsRoute
@@ -133,6 +142,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/home'
     | '/wardrobe'
+    | '/welcome'
     | '/add/details'
     | '/item/$id'
     | '/style/results'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/home'
     | '/wardrobe'
+    | '/welcome'
     | '/add/details'
     | '/item/$id'
     | '/style/results'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/_authenticated/calendar'
     | '/_authenticated/home'
     | '/_authenticated/wardrobe'
+    | '/_authenticated/welcome'
     | '/_authenticated/add/details'
     | '/_authenticated/item/$id'
     | '/_authenticated/style/results'
@@ -225,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWardrobeRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/welcome': {
+      id: '/_authenticated/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof AuthenticatedWelcomeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/add/': {
       id: '/_authenticated/add/'
       path: '/add'
@@ -267,6 +286,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedWardrobeRoute: typeof AuthenticatedWardrobeRoute
+  AuthenticatedWelcomeRoute: typeof AuthenticatedWelcomeRoute
   AuthenticatedAddDetailsRoute: typeof AuthenticatedAddDetailsRoute
   AuthenticatedItemIdRoute: typeof AuthenticatedItemIdRoute
   AuthenticatedStyleResultsRoute: typeof AuthenticatedStyleResultsRoute
@@ -278,6 +298,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedWardrobeRoute: AuthenticatedWardrobeRoute,
+  AuthenticatedWelcomeRoute: AuthenticatedWelcomeRoute,
   AuthenticatedAddDetailsRoute: AuthenticatedAddDetailsRoute,
   AuthenticatedItemIdRoute: AuthenticatedItemIdRoute,
   AuthenticatedStyleResultsRoute: AuthenticatedStyleResultsRoute,
