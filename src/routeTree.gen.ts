@@ -10,102 +10,139 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as CalendarRouteImport } from './routes/calendar'
-import { Route as HomeRouteImport } from './routes/home'
-import { Route as WardrobeRouteImport } from './routes/wardrobe'
-import { Route as AddIndexRouteImport } from './routes/add/index'
-import { Route as AddDetailsRouteImport } from './routes/add/details'
-import { Route as ItemIdRouteImport } from './routes/item/$id'
-import { Route as StyleIndexRouteImport } from './routes/style/index'
-import { Route as StyleResultsRouteImport } from './routes/style/results'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
+import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
+import { Route as AuthenticatedWardrobeRouteImport } from './routes/_authenticated/wardrobe'
+import { Route as AuthenticatedWelcomeRouteImport } from './routes/_authenticated/welcome'
+import { Route as AuthenticatedAddIndexRouteImport } from './routes/_authenticated/add/index'
+import { Route as AuthenticatedAddDetailsRouteImport } from './routes/_authenticated/add/details'
+import { Route as AuthenticatedItemIdRouteImport } from './routes/_authenticated/item/$id'
+import { Route as AuthenticatedStyleIndexRouteImport } from './routes/_authenticated/style/index'
+import { Route as AuthenticatedStyleResultsRouteImport } from './routes/_authenticated/style/results'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CalendarRoute = CalendarRouteImport.update({
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const HomeRoute = HomeRouteImport.update({
+const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
   id: '/home',
   path: '/home',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const WardrobeRoute = WardrobeRouteImport.update({
+const AuthenticatedWardrobeRoute = AuthenticatedWardrobeRouteImport.update({
   id: '/wardrobe',
   path: '/wardrobe',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AddIndexRoute = AddIndexRouteImport.update({
+const AuthenticatedWelcomeRoute = AuthenticatedWelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAddIndexRoute = AuthenticatedAddIndexRouteImport.update({
   id: '/add/',
   path: '/add/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AddDetailsRoute = AddDetailsRouteImport.update({
+const AuthenticatedAddDetailsRoute = AuthenticatedAddDetailsRouteImport.update({
   id: '/add/details',
   path: '/add/details',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ItemIdRoute = ItemIdRouteImport.update({
+const AuthenticatedItemIdRoute = AuthenticatedItemIdRouteImport.update({
   id: '/item/$id',
   path: '/item/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const StyleIndexRoute = StyleIndexRouteImport.update({
+const AuthenticatedStyleIndexRoute = AuthenticatedStyleIndexRouteImport.update({
   id: '/style/',
   path: '/style/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const StyleResultsRoute = StyleResultsRouteImport.update({
-  id: '/style/results',
-  path: '/style/results',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthenticatedStyleResultsRoute =
+  AuthenticatedStyleResultsRouteImport.update({
+    id: '/style/results',
+    path: '/style/results',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/calendar': typeof CalendarRoute
-  '/home': typeof HomeRoute
-  '/wardrobe': typeof WardrobeRoute
-  '/add/details': typeof AddDetailsRoute
-  '/item/$id': typeof ItemIdRoute
-  '/style/results': typeof StyleResultsRoute
-  '/add/': typeof AddIndexRoute
-  '/style/': typeof StyleIndexRoute
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/calendar': typeof AuthenticatedCalendarRoute
+  '/home': typeof AuthenticatedHomeRoute
+  '/wardrobe': typeof AuthenticatedWardrobeRoute
+  '/welcome': typeof AuthenticatedWelcomeRoute
+  '/add/details': typeof AuthenticatedAddDetailsRoute
+  '/item/$id': typeof AuthenticatedItemIdRoute
+  '/style/results': typeof AuthenticatedStyleResultsRoute
+  '/add/': typeof AuthenticatedAddIndexRoute
+  '/style/': typeof AuthenticatedStyleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/calendar': typeof CalendarRoute
-  '/home': typeof HomeRoute
-  '/wardrobe': typeof WardrobeRoute
-  '/add/details': typeof AddDetailsRoute
-  '/item/$id': typeof ItemIdRoute
-  '/style/results': typeof StyleResultsRoute
-  '/add': typeof AddIndexRoute
-  '/style': typeof StyleIndexRoute
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/calendar': typeof AuthenticatedCalendarRoute
+  '/home': typeof AuthenticatedHomeRoute
+  '/wardrobe': typeof AuthenticatedWardrobeRoute
+  '/welcome': typeof AuthenticatedWelcomeRoute
+  '/add/details': typeof AuthenticatedAddDetailsRoute
+  '/item/$id': typeof AuthenticatedItemIdRoute
+  '/style/results': typeof AuthenticatedStyleResultsRoute
+  '/add': typeof AuthenticatedAddIndexRoute
+  '/style': typeof AuthenticatedStyleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/calendar': typeof CalendarRoute
-  '/home': typeof HomeRoute
-  '/wardrobe': typeof WardrobeRoute
-  '/add/details': typeof AddDetailsRoute
-  '/item/$id': typeof ItemIdRoute
-  '/style/results': typeof StyleResultsRoute
-  '/add/': typeof AddIndexRoute
-  '/style/': typeof StyleIndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
+  '/_authenticated/home': typeof AuthenticatedHomeRoute
+  '/_authenticated/wardrobe': typeof AuthenticatedWardrobeRoute
+  '/_authenticated/welcome': typeof AuthenticatedWelcomeRoute
+  '/_authenticated/add/details': typeof AuthenticatedAddDetailsRoute
+  '/_authenticated/item/$id': typeof AuthenticatedItemIdRoute
+  '/_authenticated/style/results': typeof AuthenticatedStyleResultsRoute
+  '/_authenticated/add/': typeof AuthenticatedAddIndexRoute
+  '/_authenticated/style/': typeof AuthenticatedStyleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
+    | '/reset-password'
     | '/calendar'
     | '/home'
     | '/wardrobe'
+    | '/welcome'
     | '/add/details'
     | '/item/$id'
     | '/style/results'
@@ -114,9 +151,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
+    | '/reset-password'
     | '/calendar'
     | '/home'
     | '/wardrobe'
+    | '/welcome'
     | '/add/details'
     | '/item/$id'
     | '/style/results'
@@ -125,26 +165,25 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/calendar'
-    | '/home'
-    | '/wardrobe'
-    | '/add/details'
-    | '/item/$id'
-    | '/style/results'
-    | '/add/'
-    | '/style/'
+    | '/_authenticated'
+    | '/auth'
+    | '/reset-password'
+    | '/_authenticated/calendar'
+    | '/_authenticated/home'
+    | '/_authenticated/wardrobe'
+    | '/_authenticated/welcome'
+    | '/_authenticated/add/details'
+    | '/_authenticated/item/$id'
+    | '/_authenticated/style/results'
+    | '/_authenticated/add/'
+    | '/_authenticated/style/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CalendarRoute: typeof CalendarRoute
-  HomeRoute: typeof HomeRoute
-  WardrobeRoute: typeof WardrobeRoute
-  AddDetailsRoute: typeof AddDetailsRoute
-  ItemIdRoute: typeof ItemIdRoute
-  StyleResultsRoute: typeof StyleResultsRoute
-  AddIndexRoute: typeof AddIndexRoute
-  StyleIndexRoute: typeof StyleIndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -156,75 +195,125 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/calendar': {
-      id: '/calendar'
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/calendar': {
+      id: '/_authenticated/calendar'
       path: '/calendar'
       fullPath: '/calendar'
-      preLoaderRoute: typeof CalendarRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedCalendarRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/home': {
-      id: '/home'
+    '/_authenticated/home': {
+      id: '/_authenticated/home'
       path: '/home'
       fullPath: '/home'
-      preLoaderRoute: typeof HomeRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedHomeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/wardrobe': {
-      id: '/wardrobe'
+    '/_authenticated/wardrobe': {
+      id: '/_authenticated/wardrobe'
       path: '/wardrobe'
       fullPath: '/wardrobe'
-      preLoaderRoute: typeof WardrobeRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedWardrobeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/add/': {
-      id: '/add/'
+    '/_authenticated/welcome': {
+      id: '/_authenticated/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof AuthenticatedWelcomeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/add/': {
+      id: '/_authenticated/add/'
       path: '/add'
       fullPath: '/add/'
-      preLoaderRoute: typeof AddIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedAddIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/add/details': {
-      id: '/add/details'
+    '/_authenticated/add/details': {
+      id: '/_authenticated/add/details'
       path: '/add/details'
       fullPath: '/add/details'
-      preLoaderRoute: typeof AddDetailsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedAddDetailsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/item/$id': {
-      id: '/item/$id'
+    '/_authenticated/item/$id': {
+      id: '/_authenticated/item/$id'
       path: '/item/$id'
       fullPath: '/item/$id'
-      preLoaderRoute: typeof ItemIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedItemIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/style/': {
-      id: '/style/'
+    '/_authenticated/style/': {
+      id: '/_authenticated/style/'
       path: '/style'
       fullPath: '/style/'
-      preLoaderRoute: typeof StyleIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedStyleIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/style/results': {
-      id: '/style/results'
+    '/_authenticated/style/results': {
+      id: '/_authenticated/style/results'
       path: '/style/results'
       fullPath: '/style/results'
-      preLoaderRoute: typeof StyleResultsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedStyleResultsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
+  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+  AuthenticatedWardrobeRoute: typeof AuthenticatedWardrobeRoute
+  AuthenticatedWelcomeRoute: typeof AuthenticatedWelcomeRoute
+  AuthenticatedAddDetailsRoute: typeof AuthenticatedAddDetailsRoute
+  AuthenticatedItemIdRoute: typeof AuthenticatedItemIdRoute
+  AuthenticatedStyleResultsRoute: typeof AuthenticatedStyleResultsRoute
+  AuthenticatedAddIndexRoute: typeof AuthenticatedAddIndexRoute
+  AuthenticatedStyleIndexRoute: typeof AuthenticatedStyleIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
+  AuthenticatedHomeRoute: AuthenticatedHomeRoute,
+  AuthenticatedWardrobeRoute: AuthenticatedWardrobeRoute,
+  AuthenticatedWelcomeRoute: AuthenticatedWelcomeRoute,
+  AuthenticatedAddDetailsRoute: AuthenticatedAddDetailsRoute,
+  AuthenticatedItemIdRoute: AuthenticatedItemIdRoute,
+  AuthenticatedStyleResultsRoute: AuthenticatedStyleResultsRoute,
+  AuthenticatedAddIndexRoute: AuthenticatedAddIndexRoute,
+  AuthenticatedStyleIndexRoute: AuthenticatedStyleIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CalendarRoute: CalendarRoute,
-  HomeRoute: HomeRoute,
-  WardrobeRoute: WardrobeRoute,
-  AddDetailsRoute: AddDetailsRoute,
-  ItemIdRoute: ItemIdRoute,
-  StyleResultsRoute: StyleResultsRoute,
-  AddIndexRoute: AddIndexRoute,
-  StyleIndexRoute: StyleIndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

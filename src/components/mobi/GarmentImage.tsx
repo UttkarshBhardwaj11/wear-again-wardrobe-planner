@@ -1,6 +1,6 @@
 import { Shirt } from "lucide-react";
 import { useState } from "react";
-import { resolveImage } from "@/lib/wardrobe/images";
+import { useResolvedImage } from "@/lib/wardrobe/photo-store";
 import { cn } from "@/lib/utils";
 
 export function GarmentImage({
@@ -15,7 +15,10 @@ export function GarmentImage({
   eager?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
-  const url = resolveImage(src);
+  const { url, pending } = useResolvedImage(src);
+  if (pending) {
+    return <div className={cn("animate-pulse bg-muted", className)} role="img" aria-label={alt} />;
+  }
   if (!url || failed) {
     return (
       <div className={cn("grid place-items-center bg-muted text-muted-foreground", className)} role="img" aria-label={alt}>

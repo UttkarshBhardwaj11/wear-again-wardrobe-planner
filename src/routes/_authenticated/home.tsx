@@ -15,7 +15,7 @@ import { suggestOutfits } from "@/lib/wardrobe/suggest";
 import { CATEGORIES, CATEGORY_LABEL, type Category } from "@/lib/wardrobe/types";
 import { describeWeather, layerAdvice, useForecast, usePlace } from "@/lib/weather";
 
-export const Route = createFileRoute("/home")({
+export const Route = createFileRoute("/_authenticated/home")({
   head: () => ({
     meta: [
       { title: "Home — Mobidrobe" },

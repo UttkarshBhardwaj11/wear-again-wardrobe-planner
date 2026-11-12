@@ -19,7 +19,7 @@ import { garmentById, occasionsFor, wearStats, wornWith } from "@/lib/wardrobe/d
 import { archiveGarment, restoreGarment, useWardrobe } from "@/lib/wardrobe/store";
 import { CATEGORY_LABEL, OCCASION_LABEL } from "@/lib/wardrobe/types";
 
-export const Route = createFileRoute("/item/$id")({
+export const Route = createFileRoute("/_authenticated/item/$id")({
   head: () => ({
     meta: [
       { title: "Item — Mobidrobe" },

@@ -1,18 +1,17 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { ArrowRight, CalendarHeart, Shirt, WandSparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { GarmentImage } from "@/components/mobi/GarmentImage";
 import { HangerIcon } from "@/components/mobi/Hanger";
-import { useHydrated } from "@/hooks/use-hydrated";
-import { completeOnboarding, useWardrobe } from "@/lib/wardrobe/store";
+import { supabase } from "@/integrations/supabase/client";
+import { takeAfterAuth } from "@/lib/auth-redirect";
+import { getState, loadWardrobe, useWardrobe } from "@/lib/wardrobe/store";
 import { cn } from "@/lib/utils";
 
-type Step = "brand" | "catalogue" | "suggest" | "plan" | "name";
+type Step = "brand" | "catalogue" | "suggest" | "plan";
 
 export const Route = createFileRoute("/")({
-  validateSearch: (s: Record<string, unknown>): { step?: "name" } =>
-    s.step === "name" ? { step: "name" } : {},
   head: () => ({
     meta: [
       { title: "Mobidrobe — Your wardrobe in your pocket" },
@@ -60,25 +59,48 @@ const SLIDES: { key: Step; eyebrow: string; title: string; body: string; icon: t
 ];
 
 function Onboarding() {
-  const { step: initialStep } = Route.useSearch();
   const state = useWardrobe();
-  const hydrated = useHydrated();
   const navigate = useNavigate();
-  const [step, setStep] = useState<Step>(initialStep ?? "brand");
-  const [name, setName] = useState("");
-  const returning = hydrated && !!state.profile && step === "brand";
+  const router = useRouter();
+  const [step, setStep] = useState<Step>("brand");
+  const [account, setAccount] = useState<"checking" | "signed-out" | "signed-in">("checking");
+  const returning = account === "signed-in" && step === "brand";
 
+  // Signed-in visitors (including those returning from Google) go on to their wardrobe.
   useEffect(() => {
-    if (initialStep === "name") setStep("name");
-  }, [initialStep]);
+    let alive = true;
+    supabase.auth.getSession().then(async ({ data }) => {
+      const user = data.session?.user;
+      if (!alive) return;
+      if (!user) {
+        setAccount("signed-out");
+        return;
+      }
+      const pending = takeAfterAuth();
+      if (pending) {
+        router.history.replace(pending);
+        return;
+      }
+      try {
+        await loadWardrobe(user.id);
+      } catch {
+        // the wardrobe screens will retry
+      }
+      if (!alive) return;
+      if (!getState().profile) {
+        navigate({ to: "/welcome", replace: true });
+        return;
+      }
+      setAccount("signed-in");
+    });
+    return () => {
+      alive = false;
+    };
+  }, [navigate, router]);
 
-  useEffect(() => {
-    if (hydrated && state.profile?.name) setName(state.profile.name);
-  }, [hydrated, state.profile?.name]);
-
-  const finish = (n: string) => {
-    completeOnboarding(n);
-    navigate({ to: "/home" });
+  const finish = () => {
+    if (account === "signed-in") navigate({ to: "/home" });
+    else navigate({ to: "/auth", search: { mode: "signup" } });
   };
 
   const slideIdx = SLIDES.findIndex((s) => s.key === step);
@@ -122,13 +144,12 @@ function Onboarding() {
                   <Button size="xl" className="w-full shadow-lift" onClick={() => setStep("catalogue")}>
                     Get Started
                   </Button>
-                  <button
-                    type="button"
-                    onClick={() => setStep("name")}
-                    className="mt-5 text-sm tracking-wide text-muted-foreground underline-offset-4 hover:underline"
-                  >
-                    Skip the intro
-                  </button>
+                  <p className="mt-5 text-sm tracking-wide text-muted-foreground">
+                    Already have an account?{" "}
+                    <Link to="/auth" className="font-semibold text-primary underline-offset-4 hover:underline">
+                      Sign in
+                    </Link>
+                  </p>
                 </>
               )}
             </div>
@@ -139,7 +160,7 @@ function Onboarding() {
           <section key={step} className="flex flex-1 flex-col animate-in fade-in slide-in-from-right-4 duration-300">
             <div className="flex items-center justify-between">
               <p className="label-tag text-primary">{SLIDES[slideIdx].eyebrow}</p>
-              <button type="button" onClick={() => setStep("name")} className="text-sm text-muted-foreground">
+              <button type="button" onClick={finish} className="text-sm text-muted-foreground">
                 Skip
               </button>
             </div>
@@ -167,7 +188,7 @@ function Onboarding() {
               <Button
                 size="xl"
                 className="w-full shadow-lift"
-                onClick={() => setStep(slideIdx < SLIDES.length - 1 ? SLIDES[slideIdx + 1].key : "name")}
+                onClick={() => (slideIdx < SLIDES.length - 1 ? setStep(SLIDES[slideIdx + 1].key) : finish())}
               >
                 Continue <ArrowRight />
               </Button>
@@ -175,50 +196,6 @@ function Onboarding() {
           </section>
         )}
 
-        {step === "name" && (
-          <section className="flex flex-1 flex-col animate-in fade-in slide-in-from-right-4 duration-300">
-            <div className="grid size-14 place-items-center rounded-full bg-primary-soft text-primary">
-              <HangerIcon className="size-7" />
-            </div>
-            <p className="mt-8 label-tag text-primary">Set up your wardrobe</p>
-            <h2 className="mt-2 font-display text-[34px] font-semibold leading-tight tracking-tight">
-              What should we call you?
-            </h2>
-            <p className="mt-3 text-muted-foreground">
-              We've hung a sample capsule on your rail so you can try everything right away. Add your own pieces any time.
-            </p>
-            <form
-              className="mt-8"
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (name.trim()) finish(name);
-              }}
-            >
-              <label htmlFor="name" className="label-tag text-muted-foreground">
-                Your first name
-              </label>
-              <input
-                id="name"
-                autoFocus
-                value={name}
-                maxLength={30}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Priya"
-                className="mt-2 h-14 w-full rounded-2xl border border-border bg-card px-4 text-lg outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
-              />
-              <Button type="submit" size="xl" disabled={!name.trim()} className="mt-8 w-full shadow-lift">
-                Enter my wardrobe <ArrowRight />
-              </Button>
-            </form>
-            <button
-              type="button"
-              onClick={() => finish("")}
-              className="mt-5 text-center text-sm tracking-wide text-muted-foreground"
-            >
-              Continue without a name
-            </button>
-          </section>
-        )}
       </main>
     </div>
   );

@@ -30,6 +30,9 @@ use the editor.
 <!-- LOVABLE:END -->
 
 ## Project rules
-- Wardrobe data (garments, outfits, calendar plans) lives in the browser's localStorage via `src/lib/wardrobe/store.ts`; there is no backend yet — keep all reads/writes going through that store so a later move to a database is one swap.
+- Wardrobe data lives in Lovable Cloud tables (profiles, garments, garment_occasions, outfits, outfit_garments, calendar_plans), every row scoped by `user_id = auth.uid()` RLS; all reads/writes go through `src/lib/wardrobe/store.ts`, which mirrors the signed-in user's wardrobe in memory and saves optimistically in a serial queue (reload on failure) so screens stay synchronous.
+- New accounts get the sample wardrobe from the `seed_sample_wardrobe` SQL function (signup trigger + `restore_sample_wardrobe` RPC); `src/lib/wardrobe/seed.ts` mirrors that data for tests, so change both together.
+- Every app page except `/`, `/auth` and `/reset-password` lives under `src/routes/_authenticated/`, whose gate loads the wardrobe and sends un-named profiles to `/welcome`.
+- Uploaded photos go to the private `garment-photos` bucket under `<user_id>/` and are stored as `storage:<path>`; `GarmentImage` resolves them to signed URLs via `photo-store.ts`.
 - Sample-wardrobe photos are referenced as `seed:<key>` and resolved by `resolveImage`, so saved data survives rebuilt asset URLs.
 - Outfit suggestions are rule-based in `src/lib/wardrobe/suggest.ts` (covered by `suggest.test.ts`); keep it pure and deterministic.

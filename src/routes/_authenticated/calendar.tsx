@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 
-export const Route = createFileRoute("/calendar")({
+export const Route = createFileRoute("/_authenticated/calendar")({
   validateSearch: (s: Record<string, unknown>): { date?: string } =>
     typeof s.date === "string" && ISO.test(s.date) ? { date: s.date } : {},
   head: () => ({

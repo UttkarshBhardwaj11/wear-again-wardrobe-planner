@@ -11,7 +11,7 @@ import { useWardrobe } from "@/lib/wardrobe/store";
 import { CATEGORIES, CATEGORY_LABEL, OCCASION_LABEL, OCCASIONS, type Category, type Occasion } from "@/lib/wardrobe/types";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/wardrobe")({
+export const Route = createFileRoute("/_authenticated/wardrobe")({
   head: () => ({
     meta: [
       { title: "Wardrobe — Mobidrobe" },
