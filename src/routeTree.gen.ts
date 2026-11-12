@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedWardrobeRouteImport } from './routes/_authenticated/wardrobe'
@@ -24,46 +25,50 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
-  id: '/_authenticated/calendar',
-  path: '/calendar',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
-  id: '/_authenticated/home',
+  id: '/home',
   path: '/home',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedWardrobeRoute = AuthenticatedWardrobeRouteImport.update({
-  id: '/_authenticated/wardrobe',
+  id: '/wardrobe',
   path: '/wardrobe',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAddIndexRoute = AuthenticatedAddIndexRouteImport.update({
-  id: '/_authenticated/add/',
+  id: '/add/',
   path: '/add/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAddDetailsRoute = AuthenticatedAddDetailsRouteImport.update({
-  id: '/_authenticated/add/details',
+  id: '/add/details',
   path: '/add/details',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedItemIdRoute = AuthenticatedItemIdRouteImport.update({
-  id: '/_authenticated/item/$id',
+  id: '/item/$id',
   path: '/item/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedStyleIndexRoute = AuthenticatedStyleIndexRouteImport.update({
-  id: '/_authenticated/style/',
+  id: '/style/',
   path: '/style/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedStyleResultsRoute =
   AuthenticatedStyleResultsRouteImport.update({
-    id: '/_authenticated/style/results',
+    id: '/style/results',
     path: '/style/results',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -91,6 +96,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/wardrobe': typeof AuthenticatedWardrobeRoute
@@ -126,6 +132,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/_authenticated/calendar'
     | '/_authenticated/home'
     | '/_authenticated/wardrobe'
@@ -138,14 +145,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
-  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
-  AuthenticatedWardrobeRoute: typeof AuthenticatedWardrobeRoute
-  AuthenticatedAddDetailsRoute: typeof AuthenticatedAddDetailsRoute
-  AuthenticatedItemIdRoute: typeof AuthenticatedItemIdRoute
-  AuthenticatedStyleResultsRoute: typeof AuthenticatedStyleResultsRoute
-  AuthenticatedAddIndexRoute: typeof AuthenticatedAddIndexRoute
-  AuthenticatedStyleIndexRoute: typeof AuthenticatedStyleIndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -157,67 +157,84 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/calendar': {
       id: '/_authenticated/calendar'
       path: '/calendar'
       fullPath: '/calendar'
       preLoaderRoute: typeof AuthenticatedCalendarRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/home': {
       id: '/_authenticated/home'
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof AuthenticatedHomeRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/wardrobe': {
       id: '/_authenticated/wardrobe'
       path: '/wardrobe'
       fullPath: '/wardrobe'
       preLoaderRoute: typeof AuthenticatedWardrobeRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/add/': {
       id: '/_authenticated/add/'
       path: '/add'
       fullPath: '/add/'
       preLoaderRoute: typeof AuthenticatedAddIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/add/details': {
       id: '/_authenticated/add/details'
       path: '/add/details'
       fullPath: '/add/details'
       preLoaderRoute: typeof AuthenticatedAddDetailsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/item/$id': {
       id: '/_authenticated/item/$id'
       path: '/item/$id'
       fullPath: '/item/$id'
       preLoaderRoute: typeof AuthenticatedItemIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/style/': {
       id: '/_authenticated/style/'
       path: '/style'
       fullPath: '/style/'
       preLoaderRoute: typeof AuthenticatedStyleIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/style/results': {
       id: '/_authenticated/style/results'
       path: '/style/results'
       fullPath: '/style/results'
       preLoaderRoute: typeof AuthenticatedStyleResultsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
+  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+  AuthenticatedWardrobeRoute: typeof AuthenticatedWardrobeRoute
+  AuthenticatedAddDetailsRoute: typeof AuthenticatedAddDetailsRoute
+  AuthenticatedItemIdRoute: typeof AuthenticatedItemIdRoute
+  AuthenticatedStyleResultsRoute: typeof AuthenticatedStyleResultsRoute
+  AuthenticatedAddIndexRoute: typeof AuthenticatedAddIndexRoute
+  AuthenticatedStyleIndexRoute: typeof AuthenticatedStyleIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedWardrobeRoute: AuthenticatedWardrobeRoute,
@@ -226,6 +243,14 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedStyleResultsRoute: AuthenticatedStyleResultsRoute,
   AuthenticatedAddIndexRoute: AuthenticatedAddIndexRoute,
   AuthenticatedStyleIndexRoute: AuthenticatedStyleIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
