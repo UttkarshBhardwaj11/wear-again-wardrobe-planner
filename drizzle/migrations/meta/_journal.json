@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794483586100,
+      "tag": "0000_wardrobe_schema_and_sample_seed",
+      "breakpoints": true
+    }
+  ]
 }

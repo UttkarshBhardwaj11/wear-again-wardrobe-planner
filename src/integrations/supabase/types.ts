@@ -14,16 +14,199 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      calendar_plans: {
+        Row: {
+          created_at: string
+          event_name: string
+          id: string
+          outfit_id: string
+          plan_date: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_name: string
+          id?: string
+          outfit_id: string
+          plan_date: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          event_name?: string
+          id?: string
+          outfit_id?: string
+          plan_date?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_plans_outfit_id_fkey"
+            columns: ["outfit_id"]
+            isOneToOne: false
+            referencedRelation: "outfits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      garment_occasions: {
+        Row: {
+          garment_id: string
+          occasion: Database["public"]["Enums"]["occasion"]
+          user_id: string
+        }
+        Insert: {
+          garment_id: string
+          occasion: Database["public"]["Enums"]["occasion"]
+          user_id?: string
+        }
+        Update: {
+          garment_id?: string
+          occasion?: Database["public"]["Enums"]["occasion"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "garment_occasions_garment_id_fkey"
+            columns: ["garment_id"]
+            isOneToOne: false
+            referencedRelation: "garments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      garments: {
+        Row: {
+          brand: string | null
+          category: Database["public"]["Enums"]["garment_category"]
+          color: string
+          created_at: string
+          deleted_at: string | null
+          id: string
+          image_url: string
+          name: string
+          source_url: string | null
+          user_id: string
+        }
+        Insert: {
+          brand?: string | null
+          category: Database["public"]["Enums"]["garment_category"]
+          color: string
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          image_url: string
+          name: string
+          source_url?: string | null
+          user_id?: string
+        }
+        Update: {
+          brand?: string | null
+          category?: Database["public"]["Enums"]["garment_category"]
+          color?: string
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          image_url?: string
+          name?: string
+          source_url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      outfit_garments: {
+        Row: {
+          garment_id: string
+          outfit_id: string
+          user_id: string
+        }
+        Insert: {
+          garment_id: string
+          outfit_id: string
+          user_id?: string
+        }
+        Update: {
+          garment_id?: string
+          outfit_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "outfit_garments_garment_id_fkey"
+            columns: ["garment_id"]
+            isOneToOne: false
+            referencedRelation: "garments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "outfit_garments_outfit_id_fkey"
+            columns: ["outfit_id"]
+            isOneToOne: false
+            referencedRelation: "outfits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      outfits: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+          occasion: Database["public"]["Enums"]["occasion"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          occasion: Database["public"]["Enums"]["occasion"]
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          occasion?: Database["public"]["Enums"]["occasion"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          onboarded_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          name?: string
+          onboarded_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          onboarded_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      clear_my_wardrobe: { Args: never; Returns: undefined }
+      restore_sample_wardrobe: { Args: { _today: string }; Returns: undefined }
+      seed_sample_wardrobe: {
+        Args: { _today: string; _user: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      garment_category: "TOPS" | "BOTTOMS" | "FOOTWEAR" | "ETHNIC" | "OUTERWEAR"
+      occasion: "CASUAL" | "FORMAL" | "PARTY" | "WEDDING"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +333,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      garment_category: ["TOPS", "BOTTOMS", "FOOTWEAR", "ETHNIC", "OUTERWEAR"],
+      occasion: ["CASUAL", "FORMAL", "PARTY", "WEDDING"],
+    },
   },
 } as const
