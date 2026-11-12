@@ -9,7 +9,7 @@ const SIGNED_URL_TTL = 60 * 60 * 24;
 
 const signed = new Map<string, string>();
 const inflight = new Map<string, Promise<void>>();
-let batch: Set<string> | null = null;
+let batch: { paths: Set<string>; done: Promise<void> } | null = null;
 
 export function isStorageRef(src: string): boolean {
   return src.startsWith(PREFIX);
@@ -46,34 +46,28 @@ function requestSigned(path: string): Promise<void> {
   const existing = inflight.get(path);
   if (existing) return existing;
   if (!batch) {
-    const current = new Set<string>();
-    batch = current;
-    const run = new Promise<void>((resolve) => {
+    const paths = new Set<string>();
+    const done = new Promise<void>((resolve) => {
+      // Collect every photo requested in the same render pass into one signing call.
       queueMicrotask(async () => {
         batch = null;
-        const paths = [...current];
+        const list = [...paths];
         try {
-          const { data } = await supabase.storage.from(BUCKET).createSignedUrls(paths, SIGNED_URL_TTL);
-          for (const p of paths) {
-            const hit = data?.find((d) => d.path === p);
-            signed.set(p, hit?.signedUrl ?? "");
-          }
+          const { data } = await supabase.storage.from(BUCKET).createSignedUrls(list, SIGNED_URL_TTL);
+          for (const p of list) signed.set(p, data?.find((d) => d.path === p)?.signedUrl ?? "");
         } catch {
-          for (const p of paths) signed.set(p, "");
+          for (const p of list) signed.set(p, "");
         } finally {
-          for (const p of paths) inflight.delete(p);
+          for (const p of list) inflight.delete(p);
           resolve();
         }
       });
     });
-    current.add(path);
-    inflight.set(path, run);
-    return run;
+    batch = { paths, done };
   }
-  batch.add(path);
-  const run = inflight.get([...batch][0])!;
-  inflight.set(path, run);
-  return run;
+  batch.paths.add(path);
+  inflight.set(path, batch.done);
+  return batch.done;
 }
 
 /** Resolves any garment image reference (sample, uploaded or web) to a displayable URL. */
