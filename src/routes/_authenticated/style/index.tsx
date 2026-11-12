@@ -35,7 +35,7 @@ import { CATEGORY_SINGULAR, OCCASION_LABEL, OCCASIONS, type Occasion } from "@/l
 import { describeWeather, layerAdvice, useForecast, usePlace } from "@/lib/weather";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/style/")({
+export const Route = createFileRoute("/_authenticated/style/")({
   validateSearch: parseStyleSearch,
   head: () => ({
     meta: [

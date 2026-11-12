@@ -25,7 +25,7 @@ import {
 } from "@/lib/wardrobe/types";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/add/details")({
+export const Route = createFileRoute("/_authenticated/add/details")({
   validateSearch: (s: Record<string, unknown>): { edit?: string } =>
     typeof s.edit === "string" && s.edit ? { edit: s.edit } : {},
   head: () => ({

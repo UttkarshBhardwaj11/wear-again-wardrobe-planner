@@ -16,7 +16,7 @@ import { PAGE_SIZE, suggestOutfits, type Suggestion } from "@/lib/wardrobe/sugge
 import { CATEGORY_LABEL, CATEGORY_SINGULAR, OCCASION_LABEL, type Garment } from "@/lib/wardrobe/types";
 import { describeWeather, useForecast, usePlace } from "@/lib/weather";
 
-export const Route = createFileRoute("/style/results")({
+export const Route = createFileRoute("/_authenticated/style/results")({
   validateSearch: parseStyleSearch,
   head: () => ({
     meta: [

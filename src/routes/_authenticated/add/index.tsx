@@ -14,7 +14,7 @@ import { saveDraft, type GarmentDraft } from "@/lib/wardrobe/draft";
 import { processPhoto } from "@/lib/wardrobe/photo";
 import { OCCASION_LABEL, OCCASIONS, type Occasion } from "@/lib/wardrobe/types";
 
-export const Route = createFileRoute("/add/")({
+export const Route = createFileRoute("/_authenticated/add/")({
   head: () => ({
     meta: [
       { title: "Add an item — Mobidrobe" },
