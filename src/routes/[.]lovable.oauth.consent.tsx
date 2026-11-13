@@ -5,6 +5,7 @@ import { useState } from "react";
 import { HangerIcon } from "@/components/mobi/Hanger";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { takeAfterAuth } from "@/lib/auth-redirect";
 
 const SCOPE_LABEL: Record<string, string> = {
   openid: "Confirm who you are",
@@ -42,6 +43,7 @@ export const Route = createFileRoute("/.lovable/oauth/consent")({
     if (!data.session) {
       throw redirect({ to: "/auth", search: { redirect: location.pathname + location.searchStr } });
     }
+    takeAfterAuth(); // we're back on the approval page; drop the remembered return path
   },
   loaderDeps: ({ search }) => ({ id: search.authorization_id }),
   loader: async ({ deps }) => {
