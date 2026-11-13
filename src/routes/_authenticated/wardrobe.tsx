@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Archive, Search } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useWebMCP } from "use-webmcp-tool";
 import { AppHeader } from "@/components/mobi/AppHeader";
 import { Chip } from "@/components/mobi/Chip";
 import { GarmentCard } from "@/components/mobi/GarmentCard";
@@ -10,6 +11,7 @@ import { activeGarments, archivedGarments, occasionsFor, wearStats } from "@/lib
 import { useWardrobe } from "@/lib/wardrobe/store";
 import { CATEGORIES, CATEGORY_LABEL, OCCASION_LABEL, OCCASIONS, type Category, type Occasion } from "@/lib/wardrobe/types";
 import { cn } from "@/lib/utils";
+import { runWebMCPTool } from "@/lib/webmcp-telemetry";
 
 export const Route = createFileRoute("/_authenticated/wardrobe")({
   head: () => ({
@@ -49,6 +51,55 @@ function Wardrobe() {
 
   const archivedCount = archivedGarments(state).length;
 
+  /** Shared by the chips, toggle and search box and by the browser-assistant tool; validates everything before changing anything. */
+  function applyFilters(next: { search?: unknown; category?: unknown; occasion?: unknown; view?: unknown }) {
+    if (next.search !== undefined && typeof next.search !== "string") throw new Error("search must be text.");
+    if (next.category !== undefined && !(next.category === "ALL" || (CATEGORIES as readonly unknown[]).includes(next.category)))
+      throw new Error(`Unknown category; expected ALL, ${CATEGORIES.join(", ")}.`);
+    if (next.occasion !== undefined && !(next.occasion === "ALL" || (OCCASIONS as readonly unknown[]).includes(next.occasion)))
+      throw new Error(`Unknown occasion; expected ALL, ${OCCASIONS.join(", ")}.`);
+    if (next.view !== undefined && next.view !== "active" && next.view !== "archived")
+      throw new Error("Unknown view; expected active or archived.");
+    if (next.search !== undefined) setQ(next.search as string);
+    if (next.category !== undefined) setCat(next.category as Category | "ALL");
+    if (next.occasion !== undefined) setOcc(next.occasion as Occasion | "ALL");
+    if (next.view !== undefined) setView(next.view as "active" | "archived");
+  }
+
+  useWebMCP({
+    name: "list_shown_pieces",
+    description: "List the wardrobe pieces currently shown on the Wardrobe screen, respecting the active search, filters and view.",
+    annotations: { readOnlyHint: true, untrustedContentHint: true },
+    execute: () =>
+      runWebMCPTool("list_shown_pieces", () => {
+        const header = `${list.length} pieces (${view === "active" ? "in rotation" : "archived"}; category ${cat}; occasion ${occ}${q.trim() ? `; search "${q.trim()}"` : ""})`;
+        if (!list.length) return `${header}. None shown.`;
+        return [
+          header,
+          ...list.map((g) => `${g.id}: ${g.name} — ${CATEGORY_LABEL[g.category]}, ${g.color}${g.brand ? `, ${g.brand}` : ""}; ${occasionsFor(state, g.id).map((o) => OCCASION_LABEL[o]).join("/") || "no occasions"}`),
+        ].join("\n");
+      }),
+  });
+
+  useWebMCP({
+    name: "filter_wardrobe",
+    description: "Change which pieces the Wardrobe screen shows: search text, category, occasion, and in-rotation vs archived. Omitted fields stay as they are.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        search: { type: "string", description: "Search by name, brand or colour. Empty string clears it." },
+        category: { type: "string", enum: ["ALL", ...CATEGORIES], description: "Category to show, or ALL." },
+        occasion: { type: "string", enum: ["ALL", ...OCCASIONS], description: "Occasion to show, or ALL." },
+        view: { type: "string", enum: ["active", "archived"], description: "Pieces in rotation (active) or archived." },
+      },
+    },
+    execute: (args: { search?: string; category?: string; occasion?: string; view?: string }) =>
+      runWebMCPTool("filter_wardrobe", () => {
+        applyFilters(args ?? {});
+        return "Wardrobe filters updated. Call list_shown_pieces to see the result.";
+      }),
+  });
+
   return (
     <Screen>
       <AppHeader />
@@ -63,7 +114,7 @@ function Wardrobe() {
               <button
                 key={v}
                 type="button"
-                onClick={() => setView(v)}
+                onClick={() => applyFilters({ view: v })}
                 className={cn(
                   "rounded-full px-3.5 py-1.5 font-medium capitalize transition-colors",
                   view === v ? "bg-card text-primary-deep shadow-sm" : "text-muted-foreground",
@@ -80,7 +131,7 @@ function Wardrobe() {
           <span className="sr-only">Search your wardrobe</span>
           <input
             value={q}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={(e) => applyFilters({ search: e.target.value })}
             placeholder="Search by name, brand or colour"
             className="min-w-0 flex-1 bg-transparent text-[15px] outline-none placeholder:text-muted-foreground"
           />
@@ -88,9 +139,9 @@ function Wardrobe() {
       </section>
 
       <div className="mt-4 flex gap-2 overflow-x-auto px-5 no-scrollbar">
-        <Chip active={cat === "ALL"} onClick={() => setCat("ALL")}>All</Chip>
+        <Chip active={cat === "ALL"} onClick={() => applyFilters({ category: "ALL" })}>All</Chip>
         {CATEGORIES.map((c) => (
-          <Chip key={c} active={cat === c} onClick={() => setCat(c)}>
+          <Chip key={c} active={cat === c} onClick={() => applyFilters({ category: c })}>
             {CATEGORY_LABEL[c]}
           </Chip>
         ))}
@@ -100,7 +151,7 @@ function Wardrobe() {
           <button
             key={o}
             type="button"
-            onClick={() => setOcc(o)}
+            onClick={() => applyFilters({ occasion: o })}
             className={cn(
               "h-8 shrink-0 rounded-full px-3 label-tag transition-colors",
               occ === o ? "bg-rose/40 text-foreground" : "text-muted-foreground",
