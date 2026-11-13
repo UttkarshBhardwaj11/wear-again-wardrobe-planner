@@ -1,11 +1,14 @@
+import { oauthReturnPath } from "./oauth-return-path";
+
 const KEY = "mobidrobe:after-auth";
 
 /** Only same-origin app paths are allowed as post-sign-in destinations. */
 export function safeAppPath(value: unknown, fallback = "/home"): string {
   if (typeof value !== "string") return fallback;
-  if (!value.startsWith("/") || value.startsWith("//") || value.startsWith("/\\")) return fallback;
-  if (value.startsWith("/auth") || value.startsWith("/reset-password")) return fallback;
-  return value;
+  const path = oauthReturnPath(value);
+  if (path === "/" && value !== "/") return fallback;
+  if (path.startsWith("/auth") || path.startsWith("/reset-password")) return fallback;
+  return path;
 }
 
 export function rememberAfterAuth(path: string) {
