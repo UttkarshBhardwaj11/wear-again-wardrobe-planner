@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
 import { rememberAfterAuth, safeAppPath } from "@/lib/auth-redirect";
+import { isConsentPath } from "@/lib/oauth-return-path";
 
 type Mode = "signin" | "signup" | "forgot";
 
@@ -90,10 +91,14 @@ function AuthPage() {
         if (error) throw error;
         go(target);
       } else if (mode === "signup") {
+        rememberAfterAuth(target);
         const { data, error } = await supabase.auth.signUp({
           email: email.trim(),
           password,
-          options: { emailRedirectTo: window.location.origin },
+          options: {
+            // Connecting an assistant: the confirmation link must land back on the approval page.
+            emailRedirectTo: isConsentPath(target) ? new URL(target, window.location.origin).href : window.location.origin,
+          },
         });
         if (error) throw error;
         if (data.session) go(target);

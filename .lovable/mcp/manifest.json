@@ -1,0 +1,225 @@
+{
+  "version": 1,
+  "sdk_version": "3.5.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://xbpvsyibwlwyxepxupks.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "wear-again-wardrobe-planner",
+      "version": "0.1.0",
+      "title": "Wear Again Wardrobe Planner"
+    },
+    "tools": [
+      {
+        "name": "list_garments",
+        "title": "List wardrobe pieces",
+        "description": "List the signed-in user's wardrobe pieces with category, colour, occasions and wear history. Optionally filter by category or occasion.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "enum": [
+                "TOPS",
+                "BOTTOMS",
+                "FOOTWEAR",
+                "ETHNIC",
+                "OUTERWEAR"
+              ],
+              "description": "Only pieces in this category."
+            },
+            "occasion": {
+              "type": "string",
+              "enum": [
+                "CASUAL",
+                "FORMAL",
+                "PARTY",
+                "WEDDING"
+              ],
+              "description": "Only pieces tagged for this occasion."
+            },
+            "include_archived": {
+              "type": "boolean",
+              "description": "Also include archived pieces. Defaults to false."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_garment",
+        "title": "Get a wardrobe piece",
+        "description": "Get one wardrobe piece by id, including the pieces it is most often worn with and the calendar events it appears in.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "garment_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Id of the piece, as returned by list_garments."
+            }
+          },
+          "required": [
+            "garment_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_calendar_plans",
+        "title": "List calendar outfits",
+        "description": "List the outfits on the user's calendar between two dates (past wear history and upcoming plans), with the pieces in each.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "string",
+              "description": "First date, YYYY-MM-DD. Defaults to 30 days ago."
+            },
+            "to": {
+              "type": "string",
+              "description": "Last date, YYYY-MM-DD. Defaults to 60 days from today."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "suggest_outfits",
+        "title": "Suggest outfits",
+        "description": "Suggest outfit combinations from the user's wardrobe for an occasion and date, ranked by match score. Use plan_outfit to lock one to the calendar.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "occasion": {
+              "type": "string",
+              "enum": [
+                "CASUAL",
+                "FORMAL",
+                "PARTY",
+                "WEDDING"
+              ],
+              "description": "The occasion to dress for."
+            },
+            "target_date": {
+              "type": "string",
+              "description": "Date the outfit is for, YYYY-MM-DD."
+            },
+            "avoid_recently_worn": {
+              "type": "boolean",
+              "description": "Skip pieces worn in the week before the date. Defaults to true."
+            },
+            "anchor_garment_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Only suggest outfits that include this piece."
+            },
+            "today": {
+              "type": "string",
+              "description": "The user's local date, YYYY-MM-DD. Defaults to today's UTC date."
+            }
+          },
+          "required": [
+            "occasion",
+            "target_date"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "plan_outfit",
+        "title": "Lock an outfit to the calendar",
+        "description": "Save an outfit made of the user's pieces and lock it to a calendar date for an event (same as 'Lock outfit' in the app).",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "garment_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "minItems": 1,
+              "maxItems": 8,
+              "description": "Ids of the pieces in the outfit."
+            },
+            "occasion": {
+              "type": "string",
+              "enum": [
+                "CASUAL",
+                "FORMAL",
+                "PARTY",
+                "WEDDING"
+              ],
+              "description": "Occasion the outfit is for."
+            },
+            "event_name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "description": "Name of the event, e.g. 'Priya's sangeet'."
+            },
+            "plan_date": {
+              "type": "string",
+              "description": "Date to wear it, YYYY-MM-DD."
+            },
+            "outfit_name": {
+              "type": "string",
+              "maxLength": 60,
+              "description": "Optional name for the outfit, e.g. a suggestion title."
+            }
+          },
+          "required": [
+            "garment_ids",
+            "occasion",
+            "event_name",
+            "plan_date"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
