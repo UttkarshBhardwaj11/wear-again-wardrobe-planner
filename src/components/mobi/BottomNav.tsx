@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { CalendarDays, LayoutGrid, Plus, WandSparkles } from "lucide-react";
+import { CalendarDays, LayoutGrid, MessageCircleHeart, Plus, WandSparkles } from "lucide-react";
 import type { ReactNode } from "react";
 import { HangerIcon } from "./Hanger";
 
-function Tab({ to, label, icon }: { to: "/home" | "/wardrobe" | "/calendar" | "/style"; label: string; icon: ReactNode }) {
+function Tab({ to, label, icon }: { to: "/home" | "/wardrobe" | "/calendar" | "/style" | "/stylist"; label: string; icon: ReactNode }) {
   return (
     <Link
       to={to}
@@ -36,6 +36,7 @@ export function BottomNav() {
         </div>
         <Tab to="/calendar" label="Calendar" icon={<CalendarDays className="size-6" strokeWidth={1.6} />} />
         <Tab to="/style" label="Styling" icon={<WandSparkles className="size-6" strokeWidth={1.6} />} />
+        <Tab to="/stylist" label="Stylist" icon={<MessageCircleHeart className="size-6" strokeWidth={1.6} />} />
       </div>
     </nav>
   );

@@ -17,6 +17,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
+import { Route as AuthenticatedStylistRouteImport } from './routes/_authenticated/stylist'
 import { Route as AuthenticatedWardrobeRouteImport } from './routes/_authenticated/wardrobe'
 import { Route as AuthenticatedWelcomeRouteImport } from './routes/_authenticated/welcome'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -64,6 +65,11 @@ const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
 const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedStylistRoute = AuthenticatedStylistRouteImport.update({
+  id: '/stylist',
+  path: '/stylist',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedWardrobeRoute = AuthenticatedWardrobeRouteImport.update({
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/home': typeof AuthenticatedHomeRoute
+  '/stylist': typeof AuthenticatedStylistRoute
   '/wardrobe': typeof AuthenticatedWardrobeRoute
   '/welcome': typeof AuthenticatedWelcomeRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/home': typeof AuthenticatedHomeRoute
+  '/stylist': typeof AuthenticatedStylistRoute
   '/wardrobe': typeof AuthenticatedWardrobeRoute
   '/welcome': typeof AuthenticatedWelcomeRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -152,6 +160,7 @@ export interface FileRoutesById {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
+  '/_authenticated/stylist': typeof AuthenticatedStylistRoute
   '/_authenticated/wardrobe': typeof AuthenticatedWardrobeRoute
   '/_authenticated/welcome': typeof AuthenticatedWelcomeRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/calendar'
     | '/home'
+    | '/stylist'
     | '/wardrobe'
     | '/welcome'
     | '/.lovable/oauth/consent'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/calendar'
     | '/home'
+    | '/stylist'
     | '/wardrobe'
     | '/welcome'
     | '/.lovable/oauth/consent'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/calendar'
     | '/_authenticated/home'
+    | '/_authenticated/stylist'
     | '/_authenticated/wardrobe'
     | '/_authenticated/welcome'
     | '/.lovable/oauth/consent'
@@ -284,6 +296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHomeRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/stylist': {
+      id: '/_authenticated/stylist'
+      path: '/stylist'
+      fullPath: '/stylist'
+      preLoaderRoute: typeof AuthenticatedStylistRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/wardrobe': {
       id: '/_authenticated/wardrobe'
       path: '/wardrobe'
@@ -346,6 +365,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+  AuthenticatedStylistRoute: typeof AuthenticatedStylistRoute
   AuthenticatedWardrobeRoute: typeof AuthenticatedWardrobeRoute
   AuthenticatedWelcomeRoute: typeof AuthenticatedWelcomeRoute
   AuthenticatedAddDetailsRoute: typeof AuthenticatedAddDetailsRoute
@@ -358,6 +378,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
+  AuthenticatedStylistRoute: AuthenticatedStylistRoute,
   AuthenticatedWardrobeRoute: AuthenticatedWardrobeRoute,
   AuthenticatedWelcomeRoute: AuthenticatedWelcomeRoute,
   AuthenticatedAddDetailsRoute: AuthenticatedAddDetailsRoute,

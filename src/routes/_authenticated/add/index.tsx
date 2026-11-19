@@ -12,6 +12,7 @@ import { categoryFromText } from "@/lib/wardrobe/classify";
 import { colorFromText } from "@/lib/wardrobe/colors";
 import { saveDraft, type GarmentDraft } from "@/lib/wardrobe/draft";
 import { processPhoto } from "@/lib/wardrobe/photo";
+import { tagGarmentPhoto } from "@/lib/ai/stylist.functions";
 import { OCCASION_LABEL, OCCASIONS, type Occasion } from "@/lib/wardrobe/types";
 
 export const Route = createFileRoute("/_authenticated/add/")({
@@ -32,6 +33,7 @@ function AddItem() {
   const navigate = useNavigate();
   const router = useRouter();
   const importLink = useServerFn(importProductLink);
+  const tagPhoto = useServerFn(tagGarmentPhoto);
   const libraryRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const [draft, setDraft] = useState<Omit<GarmentDraft, "occasions"> | null>(null);
@@ -47,6 +49,21 @@ function AddItem() {
       const { dataUrl, color } = await processPhoto(file);
       setDraft({ image_url: dataUrl, color });
       setLinkError(null);
+      try {
+        const res = await tagPhoto({ data: { image: dataUrl } });
+        if (res.ok) {
+          const t = res.tags;
+          setDraft((d) =>
+            d && d.image_url === dataUrl
+              ? { ...d, name: t.name ?? d.name, category: t.category ?? d.category, color: t.color ?? d.color }
+              : d,
+          );
+          if (t.occasions.length) setOccasions(t.occasions);
+          toast.success("AI filled in the details — check them on the next step");
+        }
+      } catch {
+        // Auto-tagging is optional; the user can tag manually.
+      }
     } catch (e) {
       toast.error((e as Error).message);
     } finally {
