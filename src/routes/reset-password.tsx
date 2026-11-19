@@ -89,10 +89,10 @@ function ResetPassword() {
                 type="password"
                 autoComplete="new-password"
                 required
-                minLength={8}
+                minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 8 characters"
+                placeholder="At least 6 characters"
                 className={inputClass}
               />
               <label htmlFor="confirm-password" className="mt-5 block label-tag text-muted-foreground">
