@@ -37,3 +37,4 @@ use the editor.
 - Sample-wardrobe photos are referenced as `seed:<key>` and resolved by `resolveImage`, so saved data survives rebuilt asset URLs.
 - Outfit suggestions are rule-based in `src/lib/wardrobe/suggest.ts` (covered by `suggest.test.ts`); keep it pure and deterministic.
 - The MCP server is defined in `src/lib/mcp/` (one `defineTool` per file, registered in `index.ts`) and served at `/mcp` via the TanStack MCP plugin; tools validate OAuth tokens and use a caller-scoped database client so RLS limits each caller to their own wardrobe. Browser-only WebMCP actions stay outside `defineMcp`.
+- AI features (photo auto-tagging, Stylist chat) live in `src/lib/ai/stylist.functions.ts` as auth-protected server functions using the AI Gateway SDK; the stylist loads the caller wardrobe server-side and only returns garment ids that exist in it, so the UI never trusts model-invented pieces.

@@ -126,7 +126,7 @@ function Stylist() {
                       <div className="mt-3 grid grid-cols-3 gap-2">
                         {gs.map((g) => (
                           <Link key={g.id} to="/item/$id" params={{ id: g.id }} className="block">
-                            <GarmentImage src={g.image_url} alt={g.name} className="aspect-square w-full rounded-xl" />
+                            <GarmentImage src={g.image_url} alt={g.name} eager className="aspect-square w-full rounded-xl" />
                             <p className="mt-1 truncate text-xs text-muted-foreground">{g.name}</p>
                           </Link>
                         ))}
